@@ -1,0 +1,54 @@
+<div class="container mx-auto py-8">
+  <h1 class="text-4xl mb-6 font-extrabold text-center text-gray-900">
+    <span class="text-indigo-600">Programming Quiz</span>
+  </h1>
+
+  <div *ngIf="questions.length > 0; else loading">
+    <div class="bg-white p-6 rounded-lg shadow-md">
+      <h2 class="text-xl font-bold mb-4">{{ questions[currentQuestionIndex]?.question | htmlDecode }}</h2>
+
+      <div *ngFor="let answer of questions[currentQuestionIndex]?.incorrect_answers; let i = index" class="mb-2">
+        <input type="radio" [id]="'answer-' + i" [value]="answer" [(ngModel)]="selectedAnswer" />
+        <label [for]="'answer-' + i" class="ml-2">{{ answer }}</label>
+      </div>
+
+      <div>
+        <input type="radio" [value]="questions[currentQuestionIndex]?.correct_answer" [(ngModel)]="selectedAnswer" />
+        <label class="ml-2">{{ questions[currentQuestionIndex]?.correct_answer }}</label>
+      </div>
+
+      <div class="mt-4">
+        <button (click)="nextQuestion()" class="bg-blue-500 text-white px-4 py-2 rounded-md" [disabled]="selectedAnswer === null">
+          answer
+        </button>
+      </div>
+
+      <!-- Exibindo se acertou ou não -->
+      <div *ngIf="isAnswerSubmitted" class="mt-4 text-center">
+        <p *ngIf="isCorrect; else wrongAnswer" class="text-green-500 font-bold">You got it right!</p>
+        <ng-template #wrongAnswer>
+          <p class="text-red-500 font-bold">You are wrong. The correct answer was: {{ questions[currentQuestionIndex]?.correct_answer }}</p>
+        </ng-template>
+      </div>
+
+      <!-- Botão para avançar para a próxima pergunta -->
+      <div *ngIf="isAnswerSubmitted">
+        <button (click)="moveToNextQuestion()" class="bg-blue-500 text-white px-4 py-2 rounded-md">
+          Next Question
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #loading>
+    <p class="text-center">Loading questions...</p>
+  </ng-template>
+
+  <div *ngIf="currentQuestionIndex === questions.length" class="mt-6 text-center">
+    <p class="text-xl font-bold">Your points: {{ score }}/{{ questions.length }}</p>
+  </div>
+
+  <div class="mt-6 text-center">
+    <p class="text-xl font-bold">Your points: {{ score }}</p>
+  </div>
+</div>
